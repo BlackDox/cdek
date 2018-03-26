@@ -9,7 +9,7 @@ public class ViewWindow extends JFrame implements View {
     private Controller controller;
     private JButton buttonAdd, buttonShow;
     private JScrollPane scrollPane;
-    JTextField addTextField;
+    JTextField addTextField, searchTextField;
     JTextArea showTextArea;
     private Font fontText = new Font(Font.MONOSPACED, Font.BOLD, 12);
     private Font fontButtons = new Font(Font.DIALOG, Font.CENTER_BASELINE, 15);
@@ -22,29 +22,41 @@ public class ViewWindow extends JFrame implements View {
 
     @Override
     public void showFrame() {
-        setFrame();
-        setButtonAdd();
-        setButtonShow();
-        setAddTextField();
-        setShowTextArea();
-        setScrollPane();
+        initFrame();
+        initButtonAdd();
+        initButtonShow();
+        initAddTextField();
+        initShowTextArea();
+        initScrollPane();
+        initSearchTextField();
         setVisible(true);
+    }
+
+    @Override
+    public String getFilter() {
+        return searchTextField.getText();
     }
 
     Controller getController() {
         return controller;
     }
 
-    private void setFrame() {
+    @Override
+    public void logIt(String message) {
+        switchShowTextArea(false);
+        showTextArea.setText(message);
+    }
+
+    private void initFrame() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        xSize = (screenSize.width - 600) / 2 - 10;
-        setBounds((screenSize.width - 600) / 2, (screenSize.height - 400) / 2, xSize + 30, 500);
+        xSize = (screenSize.width - 600) / 2;
+        setBounds((screenSize.width - 600) / 2, (screenSize.height - 400) / 2, xSize+25, 500);
         setLayout(null);
         setResizable(false);
         addWindowListener(new ListenerButtonClose(controller));
     }
 
-    private void setButtonAdd() {
+    private void initButtonAdd() {
         buttonAdd = new JButton("ADD to DB");
         buttonAdd.setBounds(10, 80, xSize, 40);
         buttonAdd.setForeground(Color.RED);
@@ -54,9 +66,9 @@ public class ViewWindow extends JFrame implements View {
         add(buttonAdd, 0);
     }
 
-    private void setButtonShow() {
+    private void initButtonShow() {
         buttonShow = new JButton("SHOW DB");
-        buttonShow.setBounds(10, 130, xSize, 40);
+        buttonShow.setBounds(10, 130, xSize-250, 40);
         buttonShow.setForeground(Color.RED);
         buttonShow.setFont(fontButtons);
         buttonShow.setOpaque(true);
@@ -64,7 +76,7 @@ public class ViewWindow extends JFrame implements View {
         add(buttonShow, 0);
     }
 
-    private void setAddTextField() {
+    private void initAddTextField() {
         addTextField = new JTextField();
         addTextField.setBounds(10, 10, xSize, 50);
         addTextField.setBorder(BorderFactory.createEtchedBorder());
@@ -73,12 +85,22 @@ public class ViewWindow extends JFrame implements View {
         add(addTextField);
     }
 
-    private void setShowTextArea() {
+    private void initSearchTextField() {
+        searchTextField = new JTextField("Filter");
+        searchTextField.setBounds(buttonShow.getWidth()+20, 130, this.getWidth()-buttonShow.getWidth()-35, 40);
+        searchTextField.setBorder(BorderFactory.createEtchedBorder());
+        searchTextField.setFont(fontText);
+        searchTextField.setHorizontalAlignment(JTextField.CENTER);
+        searchTextField.addMouseListener(new ListenerSearchArea(searchTextField));
+        add(searchTextField);
+    }
+
+    private void initShowTextArea() {
         showTextArea = new JTextArea();
         switchShowTextArea(false);
     }
 
-    private void setScrollPane() {
+    private void initScrollPane() {
         scrollPane = new JScrollPane(showTextArea, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBounds(10, 180, xSize, 280);
         scrollPane.setBorder(BorderFactory.createEtchedBorder());
@@ -88,8 +110,8 @@ public class ViewWindow extends JFrame implements View {
 
     void switchShowTextArea(boolean show) {
         if (show) {
-            showTextArea.setBackground(Color.white);
             showTextArea.setEditable(true);
+            showTextArea.setBackground(Color.white);
         } else {
             showTextArea.setBackground(Color.LIGHT_GRAY);
             showTextArea.setEditable(false);

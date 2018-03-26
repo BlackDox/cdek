@@ -8,4 +8,5 @@ public interface Controller {
     void exit();
     ArrayList<User> getData();
     void insertData(String username);
+    void logIt(String message);
 }

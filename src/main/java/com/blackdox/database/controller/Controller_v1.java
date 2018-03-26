@@ -14,12 +14,12 @@ public class Controller_v1 implements Controller {
 
     public Controller_v1() {
         view = new ViewWindow(this);
-        dbAccess = new DBWorker();
         view.showFrame();
+        dbAccess = new DBWorker(this);
     }
 
     public ArrayList<User> getData() {
-        return dbAccess.getData();
+        return dbAccess.getData(view.getFilter());
     }
 
     @Override
@@ -27,10 +27,13 @@ public class Controller_v1 implements Controller {
         dbAccess.insertData(username);
     }
 
+    @Override
+    public void logIt(String message) {
+        view.logIt(message);
+    }
+
     public void exit() {
         dbAccess.disconnect();
-        while (!dbAccess.isConnectionClosed()) {
-        }
         System.exit(0);
     }
 }

@@ -1,5 +1,7 @@
 package com.blackdox.database.model;
 
+import com.blackdox.database.controller.Controller;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -12,17 +14,23 @@ public class DBWorker implements DBAccess {
     private Connection connection;
     private PreparedStatement preparedStatement;
     private Statement statement;
+    private Controller controller;
 
-    public DBWorker() {
+    public DBWorker(Controller controller) {
+        this.controller = controller;
         connect();
     }
 
     @Override
-    public ArrayList<User> getData() {
+    public ArrayList<User> getData(String filter) {
         ArrayList<User> users = new ArrayList<>();
         ResultSet resultSet = null;
         try {
-            resultSet = getStatement().executeQuery("SELECT * FROM users");
+            if (filter.trim().isEmpty() || filter.equals("Filter")) {
+                resultSet = getStatement().executeQuery("SELECT * FROM users");
+            } else {
+                resultSet = getStatement().executeQuery("SELECT * FROM users WHERE name LIKE '%" + filter + "%'");
+            }
             while (resultSet.next()) {
                 User user = new User();
                 user.setId(resultSet.getInt(1));
@@ -30,6 +38,7 @@ public class DBWorker implements DBAccess {
                 users.add(user);
             }
         } catch (SQLException e) {
+            controller.logIt("Access to MySQL-database FAILED.");
             e.printStackTrace();
         }
         return users;
@@ -41,17 +50,9 @@ public class DBWorker implements DBAccess {
             getPreparedStatement().setString(1, username);
             getPreparedStatement().execute();
         } catch (SQLException e) {
+            controller.logIt("Access to MySQL-database FAILED.");
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public boolean isConnectionClosed() {
-        try {
-            return connection.isClosed();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } return true;
     }
 
     @Override
@@ -61,7 +62,9 @@ public class DBWorker implements DBAccess {
             statement = connection.createStatement();
             preparedStatement = connection.prepareStatement(INSERT_COMMAND);
             System.out.println("Access to MySQL-database successfully.");
+            controller.logIt("Access to MySQL-database successfully.");
         } catch (SQLException e) {
+            controller.logIt("Access to MySQL-database FAILED.");
             e.printStackTrace();
         }
     }
@@ -71,6 +74,7 @@ public class DBWorker implements DBAccess {
         try {
             close();
         } catch (Exception e) {
+            controller.logIt("Access to MySQL-database FAILED.");
             e.printStackTrace();
         }
     }
@@ -88,6 +92,7 @@ public class DBWorker implements DBAccess {
         preparedStatement.close();
         statement.close();
         connection.close();
+        controller.logIt("Access to MySQL-database is closed.");
         System.out.println("Access to MySQL-database is closed.");
     }
 }

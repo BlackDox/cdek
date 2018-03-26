@@ -7,7 +7,6 @@ public interface DBAccess extends AutoCloseable {
     void connect();
     Statement getStatement();
     void disconnect();
-    ArrayList<User> getData();
+    ArrayList<User> getData(String filter);
     void insertData(String username);
-    boolean isConnectionClosed();
 }

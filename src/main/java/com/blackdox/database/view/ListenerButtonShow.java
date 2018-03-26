@@ -17,9 +17,9 @@ public class ListenerButtonShow implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         ArrayList<User> users = viewWindow.getController().getData();
         viewWindow.switchShowTextArea(true);
-        viewWindow.showTextArea.setText("   id \t\t\t name");
+        viewWindow.showTextArea.setText("   id \t\t name");
         for (User user:users) {
-            String resultString = String.format("\n %4d %23s", user.getId(), user.getUserName());
+            String resultString = String.format("\n %4d %57s", user.getId(), user.getUserName());
             viewWindow.showTextArea.append(resultString);
         }
     }
