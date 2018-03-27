@@ -1,0 +1,11 @@
+com\blackdox\database\view\View.class
+com\blackdox\database\view\ListenerButtonAdd.class
+com\blackdox\database\controller\Controller_v1.class
+com\blackdox\database\model\DBWorker.class
+com\blackdox\database\model\User.class
+com\blackdox\database\view\ListenerButtonShow.class
+com\blackdox\database\model\DBAccess.class
+com\blackdox\database\controller\Controller.class
+com\blackdox\database\view\ViewWindow.class
+com\blackdox\database\Main.class
+com\blackdox\database\view\ListenerButtonClose.class
