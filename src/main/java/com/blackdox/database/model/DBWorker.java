@@ -88,10 +88,14 @@ public class DBWorker implements DBAccess {
     }
 
     @Override
-    public void close() throws Exception {
-        preparedStatement.close();
-        statement.close();
-        connection.close();
+    public void close() {
+        try {
+            if (preparedStatement != null) preparedStatement.close();
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         controller.logIt("Access to MySQL-database is closed.");
         System.out.println("Access to MySQL-database is closed.");
     }
